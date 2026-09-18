@@ -1,0 +1,23 @@
+# 실행 산출물 — 실행마다 새로 만들어진다. 저장소에 올리지 않는다.
+outputs/run_*/
+
+# 파이썬 캐시
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 비밀값 — 서비스 계정 키는 여기 절대 들어오면 안 된다.
+# 템플릿(.streamlit/secrets.toml.example)만 올리고 실제 값은 Streamlit Cloud의
+# Settings → Secrets 에 넣는다.
+.streamlit/secrets.toml
+*service-account*.json
+*credentials*.json
+*.pem
+
+# 로컬 도구 설정
+.claude/settings.local.json
+
+# 폰트 빌드 입력물 — 앱은 Regular·Bold 두 개만 쓴다 (pipeline/report.py).
+# 가변 폰트는 scripts/get_fonts.py가 정적 TTF를 뽑을 때만 필요한 10MB 원본이다.
+fonts/NotoSansKR[[]wght[]].ttf
+fonts/_font_test.pdf

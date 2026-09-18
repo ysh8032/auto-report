@@ -1,0 +1,9 @@
+# 버전은 고정하지 않는다. 이름만 적는다.
+streamlit
+pandas
+pyyaml
+google-cloud-bigquery
+pyarrow          # 스테이징 로드 잡(load_table_from_dataframe)에 필요
+plotly           # 추이 차트 (DESIGN.md 1절)
+fpdf2
+pytest           # tests/ 실행용. pytest 없이도 python tests/test_reproducible.py로 돈다
