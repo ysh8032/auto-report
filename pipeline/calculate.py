@@ -26,7 +26,7 @@ import pandas as pd
 from google.cloud import bigquery
 
 import config
-from pipeline import profile
+from pipeline import demo, profile
 
 # ── 상태 ──────────────────────────────────────────────────────────────
 OK = "OK"
@@ -130,13 +130,18 @@ def _service_account_from_secrets() -> Tuple[Optional[Any], Optional[str]]:
 
 
 def make_client() -> bigquery.Client:
-    """BigQuery 클라이언트를 만든다. secrets → config.BQ_PROJECT → ADC 순으로 본다.
+    """BigQuery 클라이언트를 만든다. 데모 → secrets → config.BQ_PROJECT → ADC 순으로 본다.
 
     배포 환경에서는 Streamlit secrets의 서비스 계정을, 로컬에서는 ADC를 쓴다.
     ADC에 기본 프로젝트가 없으면 `quota_project_id`를 쓴다 — `gcloud auth
     application-default login`만 한 환경에서는 이쪽에만 프로젝트가 적혀 있다.
     끝내 못 찾으면 **추측하지 않고 멈춘다.** 엉뚱한 프로젝트에 테이블을 만드는 것보다 낫다.
     """
+    if demo.is_enabled():
+        # 데모 모드 — BigQuery에 연결하지 않는다. 숫자는 가짜이고, 화면에는 배너가 선다.
+        # 자격증명을 못 찾아서 여기로 오는 일은 없다. 명시적으로 켠 경우뿐이다 (pipeline/demo.py).
+        return demo.make_client()  # type: ignore[return-value]
+
     sa_credentials, sa_project = _service_account_from_secrets()
     if sa_credentials is not None:
         resolved = config.BQ_PROJECT or sa_project

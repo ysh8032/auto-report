@@ -1,0 +1,35 @@
+{
+  "생성시각": "2026-08-22T14:27:21+09:00",
+  "subject": "[월간] CS 지표 리포트 2025-01 (확인 필요) (초안)",
+  "to": [
+    "report-recipient@example.com"
+  ],
+  "from": "auto-report@example.com",
+  "attachments": [
+    {
+      "filename": "report.md",
+      "path": "C:\\Users\\ysh80\\OneDrive\\바탕 화면\\모두의 연구소\\실습\\6주차_실습교육\\auto-report\\outputs\\run_20260822_1424\\report.md",
+      "size": 19640,
+      "exists": true
+    },
+    {
+      "filename": "report.pdf",
+      "path": "C:\\Users\\ysh80\\OneDrive\\바탕 화면\\모두의 연구소\\실습\\6주차_실습교육\\auto-report\\outputs\\run_20260822_1424\\report.pdf",
+      "size": null,
+      "exists": false
+    },
+    {
+      "filename": "metrics.csv",
+      "path": "C:\\Users\\ysh80\\OneDrive\\바탕 화면\\모두의 연구소\\실습\\6주차_실습교육\\auto-report\\outputs\\run_20260822_1424\\metrics.csv",
+      "size": 2309,
+      "exists": true
+    },
+    {
+      "filename": "comparison.csv",
+      "path": "C:\\Users\\ysh80\\OneDrive\\바탕 화면\\모두의 연구소\\실습\\6주차_실습교육\\auto-report\\outputs\\run_20260822_1424\\comparison.csv",
+      "size": 1178,
+      "exists": true
+    }
+  ],
+  "발송여부": "발송하지 않음 (6주차 범위는 초안·확정까지)"
+}

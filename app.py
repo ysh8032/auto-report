@@ -26,6 +26,7 @@ from pipeline import (
     calculate,
     charts,
     compare,
+    demo,
     email_draft,
     intake,
     manual_sections,
@@ -358,6 +359,35 @@ catalog_stamp = runlog.catalog_stamp
 catalog_count = runlog.catalog_count
 
 
+# ── 데모 모드 배너 ────────────────────────────────────────────────────
+def render_demo_banner() -> None:
+    """데모 모드일 때 화면 맨 위에 세우는 경고. 끌 수 없다.
+
+    **접을 수 있게 만들지 않는다.** 이 배너의 목적은 화면의 숫자가 가짜라는 것을
+    한순간도 잊지 않게 하는 것 하나뿐이라, 접히는 순간 목적이 사라진다.
+    색은 차단(rose)을 쓴다 — 경고(amber)로 두면 "값은 맞는데 주의하라"로 읽힌다
+    (CLAUDE.md 7절 상태 색 대응).
+    """
+    if not demo.is_enabled():
+        return
+
+    color = common.COLOR_BLOCK
+    st.markdown(
+        f'<div style="padding:.85rem 1rem;border-radius:10px;'
+        f'border:1px solid {color};border-left:6px solid {color};'
+        f'background:{color}14;margin-bottom:1rem;">'
+        f'<div style="font-weight:800;color:{color};font-size:1.02rem;">'
+        f'{common.esc(demo.BANNER_TITLE)}</div>'
+        f'<div style="margin-top:.35rem;line-height:1.6;">'
+        f'{common.esc(demo.BANNER_BODY)}</div>'
+        f'<div style="margin-top:.45rem;font-size:.86rem;opacity:.85;">'
+        f'실제로 계산한 결과를 보려면 왼쪽 <b>기존 실행 불러오기</b>에서 '
+        f'기록된 실행을 선택하세요 — 그 화면의 숫자는 진짜입니다.</div>'
+        f'</div>',
+        unsafe_allow_html=True,
+    )
+
+
 def render_sidebar(
     metrics_catalog: Optional[dict],
     metrics_error: Optional[str],
@@ -365,6 +395,17 @@ def render_sidebar(
     schema_error: Optional[str],
 ) -> None:
     with st.sidebar:
+        if demo.is_enabled():
+            # 본문 배너는 위로 스크롤해야 보인다. 사이드바는 따라다니므로 여기에도 박는다.
+            st.markdown(
+                f'<div style="padding:.5rem .7rem;border-radius:8px;'
+                f'border:1px solid {common.COLOR_BLOCK};'
+                f'background:{common.COLOR_BLOCK}1a;margin-bottom:.8rem;'
+                f'font-weight:700;color:{common.COLOR_BLOCK};font-size:.9rem;">'
+                f'데모 모드 · 숫자는 가짜</div>',
+                unsafe_allow_html=True,
+            )
+
         st.markdown("### 카탈로그")
 
         if metrics_catalog is None or schema_catalog is None:
@@ -2339,6 +2380,17 @@ def render_trend_charts(metrics_catalog: dict, schema_catalog: dict) -> None:
         st.caption("기간을 읽지 못해 추이를 그리지 않았습니다.")
         return
 
+    if demo.is_enabled() and st.session_state.get("loaded_run"):
+        # 기록된 실행을 불러온 화면이다 — 표의 숫자는 파일에서 읽은 **진짜**다.
+        # 추이만 지금 계산하면 데모 모드에서는 가짜가 나오므로, 한 화면에 진짜와
+        # 가짜가 섞인다. 그리지 않고 이유를 적는다 (CLAUDE.md 9절 거짓 보고 금지).
+        st.info(
+            "추이 차트는 그리지 않았습니다 — 이 화면의 지표 값은 기록된 실제 결과인데, "
+            "추이는 지금 계산해야 해서 데모 모드에서는 가짜 값이 나옵니다. "
+            "한 화면에 진짜와 가짜를 섞지 않으려고 생략했습니다."
+        )
+        return
+
     bar = st.progress(0.0, text="추이 계산 준비 중…")
 
     def on_progress(done: int, total: int, month: str) -> None:
@@ -3594,6 +3646,8 @@ def main() -> None:
         "파일 하나를 넣으면 지표 계산부터 이메일 초안까지 흐릅니다. "
         "사람은 넣기 한 번, 승인 세 번만 합니다."
     )
+
+    render_demo_banner()
 
     for problem in config.config_warnings():
         st.warning(problem)
